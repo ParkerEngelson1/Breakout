@@ -29,10 +29,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         makeLoseZone()
         makePaddle()
         makeLabels()
-        
-        
     }
-    
     func createBackground() {
         let stars = SKTexture(imageNamed: "Stars")
         for i in 0...1 {
@@ -73,18 +70,15 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         ball.physicsBody?.contactTestBitMask = (ball.physicsBody?.collisionBitMask)!
         addChild(ball)
     }
-    
     func resetGame() {
         makeBall()
         makeBricks()
         updateLabels()
     }
-    
     func kickBall() {
         ball.physicsBody?.isDynamic = true
-        ball.physicsBody?.applyImpulse(CGVector(dx: 3, dy: 5))
+        ball.physicsBody?.applyImpulse(CGVector(dx: Int.random(in: -5...5), dy: 5))
     }
-    
     func makePaddle() {
         paddle.removeFromParent()
         paddle = SKSpriteNode(color: .white, size: CGSize(width: frame.width/4, height: 20))
@@ -136,7 +130,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         loseZone.physicsBody?.isDynamic = false
         addChild(loseZone)
     }
-    
     func makeLabels()
     {
         playLabel.fontSize = 24
@@ -158,7 +151,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         scoreLabel.position = CGPoint(x: frame.maxX - 50, y: frame.minY + 18)
         addChild(scoreLabel)
     }
-    
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         for touch in touches {
             let location = touch.location(in: self)
@@ -180,7 +172,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             }
         }
     }
-    
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
         for touch in touches {
             let location = touch.location(in: self)
@@ -190,13 +181,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             }
         }
     }
-    
     func didBegin(_ contact: SKPhysicsContact) {
         // ask eack brick, "Is it you?"
         for brick in bricks {
             if contact.bodyA.node == brick ||
                 contact.bodyB.node  == brick {
                 score += 1
+                ball.physicsBody!.velocity.dx *= CGFloat(1.02)
+                ball.physicsBody!.velocity.dy *= CGFloat(1.02)
                 updateLabels()
                 if brick.color == .blue {
                     brick.color = .orange
@@ -226,12 +218,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             }
         }
     }
-    
     func updateLabels() {
         scoreLabel.text = "Score: \(score)"
         livesLabel.text = "Lives: \(lives)"
     }
-    
     func gameOver(winner: Bool)
     {
         playingGame = false
@@ -244,7 +234,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             playLabel.text = "You Lose! Tap to play again"
         }
     }
-    
     override func update(_ currentTime: TimeInterval) {
         if abs(ball.physicsBody!.velocity.dx) < 100 {
             // ball has stalled in the x direction, so kick it randomly horizontally
