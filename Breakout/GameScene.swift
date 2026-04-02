@@ -28,7 +28,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         makeLoseZone()
         makePaddle()
         makeLabels()
-      
+        
         
     }
     
@@ -46,6 +46,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             starsBackground.run(moveForever)
         }
     }
+    
     func makeBall() {
         ball.removeFromParent() // remove the ball (if it exists)
         ball = SKShapeNode(circleOfRadius: 10)
@@ -71,15 +72,18 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         ball.physicsBody?.contactTestBitMask = (ball.physicsBody?.collisionBitMask)!
         addChild(ball)
     }
+    
     func resetGame() {
         makeBall()
         makeBrick()
         updateLabels()
     }
+    
     func kickBall() {
         ball.physicsBody?.isDynamic = true
         ball.physicsBody?.applyImpulse(CGVector(dx: 3, dy: 5))
     }
+    
     func makePaddle() {
         paddle.removeFromParent()
         paddle = SKSpriteNode(color: .white, size: CGSize(width: frame.width/4, height: 20))
@@ -89,6 +93,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         paddle.physicsBody?.isDynamic = false
         addChild(paddle)
     }
+    
     func makeBrick() {
         brick.removeFromParent()
         brick = SKSpriteNode(color: .blue, size: CGSize(width: 50, height: 20))
@@ -98,6 +103,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         brick.physicsBody?.isDynamic = false
         addChild(brick)
     }
+    
     func makeLoseZone()
     {
         loseZone = SKSpriteNode(color: .red, size: CGSize(width: frame.width, height: 50))
@@ -107,6 +113,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         loseZone.physicsBody?.isDynamic = false
         addChild(loseZone)
     }
+    
     func makeLabels()
     {
         playLabel.fontSize = 24
@@ -128,6 +135,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         scoreLabel.position = CGPoint(x: frame.maxX - 50, y: frame.minY + 18)
         addChild(scoreLabel)
     }
+    
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         for touch in touches {
             let location = touch.location(in: self)
@@ -149,6 +157,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             }
         }
     }
+    
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
         for touch in touches {
             let location = touch.location(in: self)
@@ -158,21 +167,33 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             }
         }
     }
+    
     func didBegin(_ contact: SKPhysicsContact) {
         if contact.bodyA.node?.name == "brick" ||
             contact.bodyB.node?.name == "brick" {
-            print("You win!")
-            brick.removeFromParent()
-            ball.removeFromParent()
+            gameOver(winner: true)
         }
         if contact.bodyA.node?.name == "loseZone" ||
             contact.bodyB.node?.name == "loseZone" {
-            print("You lose!")
-            brick.removeFromParent()
+            gameOver(winner: false)
         }
     }
+    
     func updateLabels() {
         scoreLabel.text = "Score: \(score)"
         livesLabel.text = "Lives: \(lives)"
+    }
+    
+    func gameOver(winner: Bool)
+    {
+        playingGame = false
+        playLabel.alpha = 1
+        resetGame()
+        if winner {
+            playLabel.text = "You Win! Tap to play again"
+        }
+        else {
+            playLabel.text = "You Lose! Tap to play again"
+        }
     }
 }
