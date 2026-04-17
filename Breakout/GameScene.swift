@@ -81,7 +81,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     func makePaddle() {
         paddle.removeFromParent()
-        paddle = SKSpriteNode(color: .white, size: CGSize(width: frame.width/4, height: 20))
+        paddle = SKSpriteNode(color: .white, size: CGSize(width: frame.width/5, height: 20))
         paddle.position = CGPoint(x: frame.midX, y: frame.minY + 125)
         paddle.name = "paddle"
         paddle.physicsBody = SKPhysicsBody(rectangleOf: paddle.size)
@@ -110,8 +110,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         // now, figure the number and spacing of each row of bricks
         let count = Int(frame.width) / 55
         let xOffset = (Int(frame.width) - (count * 55)) / 2 + Int(frame.minX) + 25
-        let colors: [UIColor] = [.blue, .orange, .green]
-        for r in 0..<3
+        let colors: [UIColor] = [.blue, .orange, .green, .red, .purple, .yellow, .brown, .darkGray, .cyan, .magenta]
+        for r in 0..<10
         {
             let y = Int(frame.maxY) - 65 - (r * 25)
             for i in 0..<count
@@ -133,7 +133,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     func makeLabels()
     {
         playLabel.fontSize = 24
-        playLabel.text = "Tap to start"
+        playLabel.text = "HARD MODE Tap to start"
         playLabel.fontName = "Arial"
         playLabel.position = CGPoint(x: frame.midX, y: frame.midY - 50)
         playLabel.name = "playLabel"
@@ -187,8 +187,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             if contact.bodyA.node == brick ||
                 contact.bodyB.node  == brick {
                 score += 1
-                ball.physicsBody!.velocity.dx *= CGFloat(1.02)
-                ball.physicsBody!.velocity.dy *= CGFloat(1.02)
+                
+                ball.physicsBody!.velocity.dx *= 1.03
+                ball.physicsBody!.velocity.dy *= 1.03
                 updateLabels()
                 if brick.color == .blue {
                     brick.color = .orange
@@ -245,3 +246,4 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
     }
 }
+
